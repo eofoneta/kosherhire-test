@@ -21,6 +21,7 @@ func init() {
 
 func main() {
 	r := gin.Default()
+	config.Cors(r)
 
 	routes.RegisterRoutes(r)
 
