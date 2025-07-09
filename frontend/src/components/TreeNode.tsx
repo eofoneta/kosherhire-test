@@ -4,13 +4,27 @@ import { Button } from "@/components/ui/button";
 import type { Node } from "@/hooks/useTree";
 import { TreeView } from "./treeView";
 import { AddNodeDialog } from "./AddNodeDialog";
+import { Skeleton } from "./ui/skeleton";
 
-export const TreeNode = ({ node }: { node: Node }) => {
+export const TreeNode = ({
+  node,
+  onDrillDown,
+}: {
+  node: Node;
+  onDrillDown?: (item: { id: number; name: string }) => void;
+}) => {
   const [expanded, setExpanded] = useState(false);
   const toggle = () => setExpanded((prev) => !prev);
 
   return (
-    <div className="my-1">
+    <div
+      className="my-1 cursor-pointer"
+      onDoubleClick={() => {
+        if (node.isDir && onDrillDown) {
+          onDrillDown({ id: node.id, name: node.name });
+        }
+      }}
+    >
       <div className="flex items-center gap-1">
         {node.isDir ? (
           <Button variant="ghost" size="sm" onClick={toggle} className="p-1">
@@ -30,8 +44,9 @@ export const TreeNode = ({ node }: { node: Node }) => {
           )}
         </div>
       </div>
-
+      {/* recursively calls treeView for each diractory  */}
       {node.isDir && expanded && <TreeView parentId={node.id} />}
+      {/* {!node.isDir && !expanded && <Skeleton className="h-4 w-10 rounded" />} */}
 
       <div className="ml-auto">
         {/* <DropdownMenu>
