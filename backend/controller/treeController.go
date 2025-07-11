@@ -37,3 +37,30 @@ func AddNode(c *gin.Context) {
 
 	c.JSON(http.StatusCreated, node)
 }
+
+func DeleteNode(c *gin.Context) {
+	idParam := c.Param("id")
+	id, err := strconv.Atoi(idParam)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid ID"})
+		return
+	}
+
+	err = config.DB.Exec(`
+		WITH RECURSIVE subtree AS (
+			SELECT id FROM nodes WHERE id = ?
+			UNION ALL
+			SELECT n.id FROM nodes n
+			INNER JOIN subtree s ON n.parent_id = s.id
+		)
+		DELETE FROM nodes WHERE id IN (SELECT id FROM subtree)
+	`, id).Error
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "could not delete node",
+			"message": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "node deleted"})
+}

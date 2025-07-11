@@ -11,5 +11,6 @@ func RegisterRoutes(r *gin.Engine) {
 	{
 		tree.GET("/children", controllers.GetChildren)
 		tree.POST("/add", controllers.AddNode)
+		tree.DELETE("/node/:id", controllers.DeleteNode)
 	}
 }

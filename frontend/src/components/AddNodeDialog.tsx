@@ -40,7 +40,9 @@ export const AddNodeDialog = ({ parentId }: { parentId?: number }) => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline" className="border-none w-4">+</Button>
+        <Button variant="outline" className="border-none w-4">
+          +
+        </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

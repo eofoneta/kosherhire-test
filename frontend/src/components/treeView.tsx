@@ -2,13 +2,14 @@ import { useTree } from "../hooks/useTree";
 import { TreeNode } from "./TreeNode";
 import { Skeleton } from "./ui/skeleton";
 
-export const TreeView = ({
-  parentId,
-  onDrillDown,
-}: {
-  parentId?: number;
-  onDrillDown?: (item: { id: number; name: string }) => void;
-}) => {
+interface TreeViewProps {
+  handleNavigate: (index: number) => void;
+  parentId?: number | null;
+  path: { id: number; name: string }[];
+  setPath: React.Dispatch<React.SetStateAction<{ id: number; name: string }[]>>;
+}
+
+export const TreeView = ({ parentId, path, setPath, handleNavigate }: TreeViewProps) => {
   const { data, isLoading } = useTree(parentId);
 
   if (isLoading) {
@@ -24,7 +25,7 @@ export const TreeView = ({
   return (
     <div className="ml-4 max-w-[200px]">
       {data?.map((node) => (
-        <TreeNode key={node.id} node={node} onDrillDown={onDrillDown} />
+        <TreeNode key={node.id} node={node} path={path} setPath={setPath} handleNavigate={handleNavigate} />
       ))}
     </div>
   );
