@@ -14,27 +14,16 @@ services:
       - "5432:5432"
 
   backend:
-    build:
-      context: .
-      dockerfile: backend/Dockerfile
+    image: lordmaryo/kosherhire-backend:latest
     depends_on:
       - db
-    env_file:
-      - backend/.env
-    # environment:
-    #   DB_HOST: db
-    #   DB_PORT: 5432
-    #   DB_USER: postgres
-    #   DB_PASSWORD: postgres
-    #   DB_NAME: kosherhire
+    environment:
+      - DATABASE_URL=postgres://postgres:password@db:5432/kosherhire
     ports:
       - "8081:8081"
-    working_dir: /app
 
   frontend:
-    build:
-      context: .
-      dockerfile: frontend/Dockerfile
+    image: lordmaryo/kosherhire-frontend:latest
     ports:
       - "3000:80"
     depends_on:
