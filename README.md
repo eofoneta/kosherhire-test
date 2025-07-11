@@ -12,7 +12,7 @@ A file management tree system built with Go, React, and PostgreSQL. It supports 
 
 ## Docker Setup
 
-<!-- ### Option 1 (Quick)
+### Option 1 (Quick)
 
 Run the entire project instantly using Docker. You don't really need PostgreSQL installed on your machine because it runs in a container.
 
@@ -34,9 +34,9 @@ This will pull and run the full stack.
 Open frontend in Your Browser
 
 Frontend: http://localhost:3000
-Backend: http://localhost:8081 -->
+Backend: http://localhost:8081
 
-<!-- ### Option 2 -->
+### Option 2 
 
 ### Prerequisites
 
