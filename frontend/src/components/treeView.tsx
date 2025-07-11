@@ -1,6 +1,9 @@
+import { useState } from "react";
 import { useTree } from "../hooks/useTree";
 import { TreeNode } from "./TreeNode";
+import { Button } from "./ui/button";
 import { Skeleton } from "./ui/skeleton";
+import { AddNodeDialog } from "./AddNodeDialog";
 
 interface TreeViewProps {
   handleNavigate: (index: number) => void;
@@ -9,8 +12,14 @@ interface TreeViewProps {
   setPath: React.Dispatch<React.SetStateAction<{ id: number; name: string }[]>>;
 }
 
-export const TreeView = ({ parentId, path, setPath, handleNavigate }: TreeViewProps) => {
+export const TreeView = ({
+  parentId,
+  path,
+  setPath,
+  handleNavigate,
+}: TreeViewProps) => {
   const { data, isLoading } = useTree(parentId);
+  const [showCreateModal, setShowCreateModal] = useState(false);
 
   if (isLoading) {
     return (
@@ -23,10 +32,32 @@ export const TreeView = ({ parentId, path, setPath, handleNavigate }: TreeViewPr
   }
 
   return (
-    <div className="ml-4 max-w-[200px]">
+    <div className="ml-4 max-w-[250px]">
+      {parentId == null && (
+        <Button variant={"ghost"} onClick={() => setShowCreateModal(true)}>
+          + New
+        </Button>
+      )}
+
       {data?.map((node) => (
-        <TreeNode key={node.id} node={node} path={path} setPath={setPath} handleNavigate={handleNavigate} />
+        <TreeNode
+          showCreateModal={showCreateModal}
+          setShowCreateModal={setShowCreateModal}
+          key={node.id}
+          node={node}
+          path={path}
+          setPath={setPath}
+          handleNavigate={handleNavigate}
+        />
       ))}
+
+      {showCreateModal && (
+        <AddNodeDialog
+          parentId={parentId ?? undefined}
+          open={showCreateModal}
+          setOpen={setShowCreateModal}
+        />
+      )}
     </div>
   );
 };

@@ -16,12 +16,15 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@radix-ui/react-dropdown-menu";
+import { truncate } from "@/util/util";
 
 interface TreeNodeProps {
   node: Node;
   path: { id: number; name: string }[];
   setPath: React.Dispatch<React.SetStateAction<{ id: number; name: string }[]>>;
   handleNavigate: (index: number) => void;
+  showCreateModal: boolean;
+  setShowCreateModal: (value: boolean) => void;
 }
 
 export const TreeNode = ({
@@ -29,9 +32,10 @@ export const TreeNode = ({
   path,
   setPath,
   handleNavigate,
+  showCreateModal,
+  setShowCreateModal,
 }: TreeNodeProps) => {
   const [expanded, setExpanded] = useState(false);
-  const [showCreateModal, setShowCreateModal] = useState(false);
   const { mutate: deleteNode } = useDeleteNode();
 
   const toggle = () => setExpanded((prev) => !prev);
@@ -69,12 +73,14 @@ export const TreeNode = ({
         ) : (
           <div className="w-[28px]"></div>
         )}
-
         <div className="flex justify-between items-center w-full">
           <div className="flex items-center">
             {node.isDir ? <Folder size={16} /> : <File size={16} />}
-            <span className={`ml-1 ${isActive ? "font-semibold" : ""}`}>
-              {node.name}
+            <span
+              title={node.name}
+              className={`ml-1 ${isActive ? "font-semibold" : ""}`}
+            >
+              {truncate(12, node.name)}
             </span>
           </div>
           <div className="ml-auto">
