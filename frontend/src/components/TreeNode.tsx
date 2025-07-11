@@ -1,10 +1,21 @@
 import { useRef, useState } from "react";
-import { ChevronRight, ChevronDown, Folder, File } from "lucide-react";
+import {
+  ChevronRight,
+  ChevronDown,
+  Folder,
+  File,
+  MoreHorizontal,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
-import type { Node } from "@/hooks/useTree";
+import { useDeleteNode, type Node } from "@/hooks/useTree";
 import { TreeView } from "./treeView";
 import { AddNodeDialog } from "./AddNodeDialog";
-import { Skeleton } from "./ui/skeleton";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@radix-ui/react-dropdown-menu";
 
 interface TreeNodeProps {
   node: Node;
@@ -20,6 +31,9 @@ export const TreeNode = ({
   handleNavigate,
 }: TreeNodeProps) => {
   const [expanded, setExpanded] = useState(false);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const { mutate: deleteNode } = useDeleteNode();
+
   const toggle = () => setExpanded((prev) => !prev);
 
   const isActive = path.some((p) => p.id === node.id);
@@ -63,7 +77,36 @@ export const TreeNode = ({
               {node.name}
             </span>
           </div>
-          {node.isDir && <AddNodeDialog parentId={node.id} />}
+          <div className="ml-auto">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <MoreHorizontal size={16} />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="bg-white shadow p-1 rounded text-sm space-y-2">
+                {node.isDir && (
+                  <DropdownMenuItem
+                    className="hover:bg-zinc-300 transition p-1 rounded"
+                    onClick={() => setShowCreateModal(true)}
+                  >
+                    + New
+                  </DropdownMenuItem>
+                )}
+                <DropdownMenuItem
+                  onClick={() => {
+                    if (confirm(`Delete "${node.name}"?`)) {
+                      deleteNode(node.id);
+                      console.log("Deleted node id:", node.id);
+                    }
+                  }}
+                  className="text-red-500 hover:bg-zinc-300 transition p-1 rounded"
+                >
+                  Delete
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
       </div>
 
@@ -75,6 +118,12 @@ export const TreeNode = ({
           handleNavigate={handleNavigate}
         />
       )}
+
+      <AddNodeDialog
+        parentId={node.id}
+        open={showCreateModal}
+        setOpen={setShowCreateModal}
+      />
     </div>
   );
 };

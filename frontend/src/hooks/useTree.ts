@@ -37,7 +37,7 @@ export const useDeleteNode = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (id: number) => api.delete(`/api/nodes/${id}`),
+    mutationFn: (id: number) => api.delete(`/tree/node/${id}`),
     onSuccess: () => {
       queryClient.invalidateQueries();
     },

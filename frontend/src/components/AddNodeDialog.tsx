@@ -11,7 +11,15 @@ import { useState } from "react";
 import { useAddNode } from "@/hooks/useTree";
 import { toast } from "sonner";
 
-export const AddNodeDialog = ({ parentId }: { parentId?: number }) => {
+export const AddNodeDialog = ({
+  parentId,
+  open,
+  setOpen,
+}: {
+  parentId?: number;
+  open: boolean;
+  setOpen: (open: boolean) => void;
+}) => {
   const [name, setName] = useState("");
   const [isDir, setIsDir] = useState(true);
   const addNode = useAddNode();
@@ -27,6 +35,7 @@ export const AddNodeDialog = ({ parentId }: { parentId?: number }) => {
             description: `${isDir ? "Folder" : "File"} created`,
           });
           setName("");
+          setOpen(false);
         },
         onError: () => {
           toast("Error", {
@@ -38,12 +47,7 @@ export const AddNodeDialog = ({ parentId }: { parentId?: number }) => {
   };
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="outline" className="border-none w-4">
-          +
-        </Button>
-      </DialogTrigger>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Add Folder/File</DialogTitle>
