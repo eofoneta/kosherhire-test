@@ -1,0 +1,44 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: kosherhire
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    depends_on:
+      - db
+    env_file:
+      - backend/.env
+    # environment:
+    #   DB_HOST: db
+    #   DB_PORT: 5432
+    #   DB_USER: postgres
+    #   DB_PASSWORD: postgres
+    #   DB_NAME: kosherhire
+    ports:
+      - "8081:8081"
+    working_dir: /app
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:
